@@ -1,0 +1,178 @@
+
+package cse0214;
+import java.util.*;
+
+////////////////////////////////////
+
+class MaxHeap { 
+        int[] Heap; 
+        int size;  // also the index of lastnode
+        int maxsize; 
+
+
+        public MaxHeap(int max) 
+        { 
+                maxsize = max; 
+                size = 0; 
+                Heap = new int[maxsize + 1];  // o index will not be used
+                Heap[0] = Integer.MAX_VALUE;  // to make sure an ivalid data, but always greater than root
+        } 
+
+        // Returns position of parent 
+        private int parent(int pos) 
+        { 
+                return pos / 2; 
+        } 
+
+        private int leftChild(int pos) 
+        { 
+                return (2 * pos); 
+        } 
+
+        private int rightChild(int pos) 
+        { 
+                return (2 * pos) + 1; 
+        } 
+
+        // Returns true of given node is leaf 
+        private boolean isLeaf(int pos) 
+        { 
+                if (size==1 && pos==1) return true; // special case, only root
+                
+                else if (pos > size/2 && pos <= size) { 
+                        return true; 
+                } 
+                //else
+                return false; 
+        } 
+
+        private void swap(int i, int j) 
+        { 
+                int tmp; 
+                tmp = Heap[i]; 
+                Heap[i] = Heap[j]; 
+                Heap[j] = tmp; 
+        } 
+
+
+        
+        public void insert(int element) 
+        {       size++;
+                Heap[size] = element; 
+
+                // Traverse up and fix maxheap property 
+                int current = size; 
+                while (Heap[current] > Heap[parent(current)]) { 
+                        swap(current, parent(current)); 
+                        current = parent(current); 
+                } 
+        } 
+
+        public void print() 
+        {   
+            if(size==0) { System.out.print("Heap is empty"); return; }
+            if(size==1) {
+               System.out.print("Heap has only one element");
+               System.out.print(Heap[1]);
+               return; 
+            }
+                
+            
+            //printing all but last node's parent and its child/children
+            for (int i = 1; i <= size / 2 - 1 ; i++) { 
+                        System.out.println(" PARENT : " + Heap[i] + " LEFT CHILD : " + 
+                                        Heap[2 * i] + " RIGHT CHILD :" + Heap[2 * i + 1]); }
+            
+            
+            // if total = odd, last parent has 2 children otherwise only 1 left child
+            if (size%2==1)
+                    System.out.println(" PARENT : " + Heap[size/2] + " LEFT CHILD : " + 
+                                        Heap[size-1] + " RIGHT CHILD :" + Heap[size]);
+            else
+                    System.out.println(" PARENT : " + Heap[size/2] + " LEFT CHILD : " + 
+                                        Heap[size]) ;  // only left child
+            
+            System.out.println(); 
+                
+        } 
+
+         
+        int removeRoot() 
+        { 
+                int item = Heap[1]; 
+                Heap[1] = Heap[size]; // last node as root, then reheap
+                size--;
+                if (size>1)         // reheap if there are more than 1 data
+                    reheap(1);// starts from root
+                return item; 
+        } 
+        
+ 
+        void reheap(int pos) 
+        {       
+                if (isLeaf(pos)) 
+                        return; 
+
+                if (Heap[pos] < Heap[leftChild(pos)] || 
+                        Heap[pos] < Heap[rightChild(pos)]) { 
+
+                        if (Heap[leftChild(pos)] > Heap[rightChild(pos)]) { 
+                                swap(pos, leftChild(pos)); 
+                                reheap(leftChild(pos)); 
+                        } 
+                        else { 
+                                swap(pos, rightChild(pos)); 
+                                reheap(rightChild(pos)); 
+                        } 
+                } 
+        } 
+        
+
+void heapSort()
+{
+    int i;
+    int item;
+    int n = size;           // remember the old size
+    for (i=0; i<n; i++)  
+    {
+        item= removeRoot(); // iteratively removing root & reheap 
+                            // in Maxheap, root always has largest value
+        System.out.print(item + "  ");
+    }
+}   
+
+} // end of class
+
+
+
+///////////////////////////////////
+
+public class MyProgram {
+
+   
+    public static void main(String[] args) {
+     
+     Scanner s1 = new Scanner(System.in);
+     int max = 100; // or readfrom keyboard
+                    // max = s1.nextInt();
+     int item;
+     
+     MaxHeap m = new MaxHeap(max);
+     
+     System.out.println("How many data to insert? ");
+     int size = s1.nextInt();
+     for (int i = 0; i<size; i++)
+     {   item = s1.nextInt();
+         m.insert(item);
+     }  
+        
+       System.out.println("Current max heap is");
+       m.print();
+       
+// HeapSort
+       System.out.println("Sorted data are");
+       m.heapSort();
+     
+    }
+    
+}
